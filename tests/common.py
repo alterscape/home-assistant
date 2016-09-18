@@ -69,8 +69,10 @@ def get_test_home_assistant(num_threads=None):
         with patch.object(hass.loop, 'run_forever', return_value=None):
             with patch.object(hass, 'async_stop', return_value=fake_stop()):
                 with patch.object(ha, 'create_timer', return_value=None):
-                    orig_start()
-                    hass.block_till_done()
+                    with patch.object(ha, 'create_worker_pool_monitor',
+                                      return_value=None):
+                        orig_start()
+                        hass.block_till_done()
 
     hass.start = start_hass
 
